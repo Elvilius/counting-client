@@ -1,13 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import http from './http';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    products: []
+    products: [],
+    price: null
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -18,17 +18,14 @@ export default new Vuex.Store({
       state.products = [];
     },
     async requestData(state) {
-      try {
-        console.log(state.products);
-        const {data} = await http.request({url: '/', method: 'POST'});
-        return data;
-      } catch (e) {
-        console.log({
-          e
-        });
-      }
+        await fetch('http://localhost:4000/', {
+          method: 'POST',
+          headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+          body: JSON.stringify(state.products)
+        })
     }
   },
+  
   getters: {
     products: state => {
       return state.products;

@@ -1,20 +1,20 @@
 <template lang="pug">
   .product
     .product__container
-      input.product__input(placeholder='name' type="text" v-model="product.name" @input="onChangeProductField('name')")
+      input.product__input(placeholder='Название' type="text" v-model="product.name" @input="onChangeProductField('name')")
       .product__error(v-if="!isValidProduct.name") Вы не указали название
 
-      input.product__input(placeholder='quantity' type="number" v-model="product.quantity" @input="onChangeProductField('quantity')")
+      input.product__input(placeholder='Количество' type="number" v-model="product.quantity" @input="onChangeProductField('quantity')")
       .product__error(v-if="!isValidProduct.quantity") Вы не указали количество
 
-      select.product__select(v-model="product.currency" @select="onChangeProductField('currency')")
+      select.product__select(v-model="product.currency" @select="onChangeProductField('Валюта')")
         option(disabled value="">Выберите один из вариантов)
         option RUB
         option EUR
         option USD
       .product__error(v-if="!isValidProduct.currency") Вы не указали валюту
 
-      input.product__input(placeholder='price' type="number" v-model="product.price" @input="onChangeProductField('price')")
+      input.product__input(placeholder='Цена' type="number" v-model="product.price" @input="onChangeProductField('price')")
       .product__error(v-if="!isValidProduct.price") Вы не указали цену
 
       button.product__btn(v-if="isValidProductAll" @click="onClickToAddProduct") Добавить
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+
 export default {
   name: "Cart",
 
@@ -72,6 +72,7 @@ export default {
       const { EUR, RUB, USD } = this.productPrices;
       return [EUR, RUB, USD].every(item => item === '');
     },
+
     productPricesString() {
       const { EUR, RUB, USD } = this.productPrices;
       return this.isEmptyProductPrice ? '' :`EUR:${EUR} RUB:${RUB} USD:${USD}`;
@@ -84,7 +85,13 @@ export default {
     },
 
     async onClickToCountPrices() {
-     await axios.get('https://www.google.ru');
+      const response = await fetch('http://localhost:4000/', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(this.products),
+      });
+      const { data } = await response.json();
+      this.productPrices = { ...this.productPrices, ...data };
     },
 
     onClickToAddProduct() {
