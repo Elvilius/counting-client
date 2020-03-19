@@ -20,13 +20,15 @@
       button.product__btn(v-if="isValidProductAll" @click="onClickToAddProduct") Добавить
     .product__count
       p Вы добавили {{productsCount}} товаров
-      p На сумму 15$
-      p Еще что-то
-
+      p {{productPricesString}}
+      
       button.product__btn(v-if="productsCount" @click="onClickToClear") Очистить коризину
+      button.product__btn(v-if="productsCount" @click="onClickToCountPrices") Посчитать
+
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "Cart",
 
@@ -44,7 +46,8 @@ export default {
       quantity: "",
       currency: "",
       price: ""
-    }
+    },
+    productPrices: { EUR: "", USD: "", RUB: "" }
   }),
 
   mounted() {
@@ -64,12 +67,24 @@ export default {
           product.quantity ? count + Number(product.quantity) : 1,
         0
       );
+    },
+    isEmptyProductPrice() {
+      const { EUR, RUB, USD } = this.productPrices;
+      return [EUR, RUB, USD].every(item => item === '');
+    },
+    productPricesString() {
+      const { EUR, RUB, USD } = this.productPrices;
+      return this.isEmptyProductPrice ? '' :`EUR:${EUR} RUB:${RUB} USD:${USD}`;
     }
   },
 
   methods: {
     onChangeProductField(field) {
       this.isValidProduct[field] = this.isValidProductField(field);
+    },
+
+    async onClickToCountPrices() {
+     await axios.get('https://www.google.ru');
     },
 
     onClickToAddProduct() {
