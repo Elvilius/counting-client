@@ -1,21 +1,25 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
+import Vue from "vue";
+import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        cart: [],
-        search: ''
+  state: {
+    products: []
+  },
+  plugins: [createPersistedState()],
+  mutations: {
+    addProduct(state, product) {
+      state.products.push(product);
     },
-    plugins: [createPersistedState()],
-    mutations: {
-        add(state, product) {
-            state.cart.push(product);
-        },
-        searchSet(state, search) {
-            state.search = search;
-        }
-    },
+    removeAllProducts(state) {
+      state.products = [];
+    }
+  },
+  getters: {
+    products: state => {
+      return state.products;
+    }
+  }
 });
